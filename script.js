@@ -1,82 +1,120 @@
+const adjectives = ['sparkly', 'tiny', 'giant', 'fluffy', 'angry', 'silent', 'neon', 'rusty', 'purple', 'ancient', 'glowing', 'bouncy', 'whispery', 'explosive', 'dreamy'];
+const nouns = ['robot', 'pizza', 'cat', 'socks', 'cloud', 'banana', 'lamp', 'bicycle', 'shoe', 'dragon', 'pancake', 'umbrella', 'toaster', 'penguin', 'balloon'];
+const verbs = ['dances', 'whispers', 'explodes', 'flies', 'sings', 'juggles', 'paints', 'builds', 'hugs', 'chases', 'glows', 'spins', 'melts', 'bounces', 'dreams'];
+const places = ['on Mars', 'in a bathtub', 'underwater', 'at midnight', 'in a tree', 'while sleeping', 'with a spoon', 'backwards', 'upside down', 'in your pocket'];
+
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+let count = 0;
 const root = document.documentElement;
-const themeToggle = document.getElementById("themeToggle");
-const menuToggle = document.getElementById("menuToggle");
-const siteNav = document.getElementById("siteNav");
-const revealEls = document.querySelectorAll(".reveal");
-const parallaxEls = document.querySelectorAll("[data-parallax]");
-const contactForm = document.getElementById("contactForm");
+const themeToggle = document.getElementById('themeToggle');
+const generateBtn = document.getElementById('generateBtn');
+const promptText = document.getElementById('promptText');
+const copyBtn = document.getElementById('copyBtn');
+const shareBtn = document.getElementById('shareBtn');
+const countEl = document.getElementById('count');
 
-function setTheme(theme) {
-  root.setAttribute("data-theme", theme);
-  localStorage.setItem("theme", theme);
-  const isDark = theme === "dark";
-  themeToggle.querySelector(".theme-icon").textContent = isDark ? "◐" : "◑";
-  document.querySelector('meta[name="theme-color"]').setAttribute("content", isDark ? "#070816" : "#f5f7ff");
+function generatePrompt() {
+  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const verb = verbs[Math.floor(Math.random() * verbs.length)];
+  const place = places[Math.floor(Math.random() * places.length)];
+  return `${adj} ${noun} that ${verb} ${place}`;
 }
 
-const savedTheme = localStorage.getItem("theme");
-const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-setTheme(savedTheme || (prefersDark ? "dark" : "light"));
-
-themeToggle.addEventListener("click", () => {
-  const current = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-  setTheme(current);
-});
-
-menuToggle.addEventListener("click", () => {
-  const isOpen = siteNav.classList.toggle("is-open");
-  menuToggle.setAttribute("aria-expanded", String(isOpen));
-});
-
-siteNav.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    siteNav.classList.remove("is-open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.remove("is-hidden");
-        observer.unobserve(entry.target);
-      }
+function explodeConfetti() {
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: canvas.height + 20,
+      vx: (Math.random() - 0.5) * 8,
+      vy: Math.random() * -12 - 8,
+      size: Math.random() * 6 + 3,
+      hue: Math.random() * 360,
+      alpha: 1
     });
-  },
-  { threshold: 0.16 }
-);
-
-revealEls.forEach((el) => {
-  el.classList.add("is-hidden");
-  observer.observe(el);
-});
-
-let ticking = false;
-function updateParallax() {
-  const y = window.scrollY || window.pageYOffset;
-  parallaxEls.forEach((el) => {
-    const speed = Number(el.getAttribute("data-parallax")) || 0;
-    el.style.transform = `translate3d(0, ${y * speed * -0.08}px, 0)`;
-  });
-  ticking = false;
-}
-
-window.addEventListener("scroll", () => {
-  if (!ticking) {
-    window.requestAnimationFrame(updateParallax);
-    ticking = true;
   }
-});
+}
 
-contactForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  alert("Message sent! NovaBloom is ready.");
-  contactForm.reset();
-});
+function updateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  particles.forEach((p, i) => {
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.vx * 0.01);
+    
+    ctx.fillStyle = `hsl(${p.hue}, 70%, 60%)`;
+    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    
+    ctx.restore();
+    
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.3;
+    p.alpha -= 0.008;
+    p.hue += 2;
+    
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+    }
+  });
+  
+  requestAnimationFrame(updateConfetti);
+}
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
+function copyPrompt() {
+  navigator.clipboard.writeText(promptText.textContent).then(() => {
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => copyBtn.textContent = 'Copy', 1500);
   });
 }
+
+function sharePrompt() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Cosmic Nonsense',
+      text: promptText.textContent
+    });
+  } else {
+    navigator.clipboard.writeText(promptText.textContent);
+  }
+}
+
+generateBtn.addEventListener('click', () => {
+  promptText.textContent = generatePrompt();
+  explodeConfetti();
+  count++;
+  countEl.textContent = count;
+});
+
+copyBtn.addEventListener('click', copyPrompt);
+shareBtn.addEventListener('click', sharePrompt);
+
+themeToggle.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', current);
+  localStorage.setItem('theme', current);
+  themeToggle.textContent = current === 'dark' ? '☀️' : '🌙';
+});
+
+if (localStorage.getItem('theme') === 'light') {
+  root.setAttribute('data-theme', 'light');
+  themeToggle.textContent = '🌙';
+}
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+
+updateConfetti();

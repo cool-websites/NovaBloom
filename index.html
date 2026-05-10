@@ -1,246 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#070816" />
-  <meta name="description" content="NovaBloom — a luxury glassmorphism PWA with bold visuals and smooth interactions." />
-  <title>NovaBloom</title>
+  <meta name="description" content="Cosmic Nonsense Generator — random absurd prompts with confetti." />
+  <title>Cosmic Nonsense</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
-
-  <div class="bg-orb orb-a" aria-hidden="true"></div>
-  <div class="bg-orb orb-b" aria-hidden="true"></div>
-  <div class="bg-grid" aria-hidden="true"></div>
-
-  <div class="page">
-    <header class="site-header glass">
-      <a class="brand" href="#top" aria-label="NovaBloom home">
-        <span class="brand-mark">N</span>
-        <span class="brand-copy">
-          <strong>NovaBloom</strong>
-          <span>Luxury on the web</span>
-        </span>
-      </a>
-
-      <div class="header-actions">
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
-          <span class="theme-icon" aria-hidden="true">◐</span>
-          <span class="theme-text">Theme</span>
-        </button>
-
-        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="siteNav">
-          <span></span><span></span><span></span>
-          <span class="sr-only">Toggle navigation</span>
-        </button>
-      </div>
-
-      <nav class="site-nav" id="siteNav" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#features">Features</a>
-        <a href="#showcase">Showcase</a>
-        <a href="#testimonials">Praise</a>
-        <a href="#contact">Contact</a>
-      </nav>
+<body data-theme="dark">
+  <canvas id="confetti"></canvas>
+  
+  <div class="app">
+    <header class="glass">
+      <h1>✨ Cosmic Nonsense</h1>
+      <button id="themeToggle" aria-label="Toggle theme">🌙</button>
     </header>
 
-    <main id="main">
-      <section class="hero section" id="top">
-        <div class="hero-copy glass reveal">
-          <p class="eyebrow">A premium internet experience</p>
-          <h1>Make the web feel expensive.</h1>
-          <p class="lead">
-            NovaBloom is a high-end glassmorphism website designed to look stunning,
-            feel fast, work offline, and behave like a real app.
-          </p>
+    <main>
+      <div class="prompt-display glass">
+        <div id="promptText" class="prompt">Click generate for cosmic absurdity</div>
+      </div>
 
-          <div class="hero-actions">
-            <a class="button button-primary" href="#contact">Start now</a>
-            <a class="button button-secondary" href="#showcase">See the magic</a>
-          </div>
-
-          <div class="hero-stats">
-            <div class="stat">
-              <strong>Offline</strong>
-              <span>PWA support</span>
-            </div>
-            <div class="stat">
-              <strong>Dark</strong>
-              <span>Saved in localStorage</span>
-            </div>
-            <div class="stat">
-              <strong>Mobile</strong>
-              <span>Responsive menu</span>
-            </div>
-          </div>
+      <div class="controls">
+        <button id="generateBtn" class="big-button">Generate Nonsense</button>
+        <div class="sub-controls">
+          <button id="copyBtn">Copy</button>
+          <button id="shareBtn">Share</button>
         </div>
+      </div>
 
-        <div class="hero-visual glass reveal" data-parallax="0.18">
-          <div class="panel-card">
-            <div class="panel-top">
-              <span class="pill">Now live</span>
-              <span class="tiny">PWA + glass UI</span>
-            </div>
-            <div class="panel-art">
-              <div class="halo halo-1"></div>
-              <div class="halo halo-2"></div>
-              <div class="halo halo-3"></div>
-              <div class="center-core"></div>
-            </div>
-            <div class="panel-bottom">
-              <h2>NovaBloom</h2>
-              <p>Luxury motion, layered depth, and premium polish.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="about" class="section">
-        <div class="section-head reveal">
-          <p class="eyebrow">About</p>
-          <h2>Beautiful, usable, and built to impress.</h2>
-        </div>
-
-        <div class="two-col glass reveal">
-          <p>
-            This site uses semantic structure, accessible controls, responsive layout,
-            and tasteful motion to create a polished first impression.
-          </p>
-          <p>
-            The design stays readable and functional with or without animation,
-            and the dark mode toggle remembers the user's preference.
-          </p>
-        </div>
-      </section>
-
-      <section id="features" class="section">
-        <div class="section-head reveal">
-          <p class="eyebrow">Features</p>
-          <h2>Everything a modern premium site should have.</h2>
-        </div>
-
-        <div class="grid three">
-          <article class="card glass reveal">
-            <span class="num">01</span>
-            <h3>App-like PWA</h3>
-            <p>Installable behavior with offline caching and a manifest.</p>
-          </article>
-
-          <article class="card glass reveal">
-            <span class="num">02</span>
-            <h3>Dark mode</h3>
-            <p>Toggle themes instantly, with preference stored in localStorage.</p>
-          </article>
-
-          <article class="card glass reveal">
-            <span class="num">03</span>
-            <h3>Mobile nav</h3>
-            <p>A responsive hamburger menu that works smoothly on small screens.</p>
-          </article>
-
-          <article class="card glass reveal">
-            <span class="num">04</span>
-            <h3>Smooth scroll</h3>
-            <p>Elegant anchor navigation with motion that feels natural.</p>
-          </article>
-
-          <article class="card glass reveal">
-            <span class="num">05</span>
-            <h3>Parallax depth</h3>
-            <p>Subtle motion layers that create a richer sense of space.</p>
-          </article>
-
-          <article class="card glass reveal">
-            <span class="num">06</span>
-            <h3>Accessible by default</h3>
-            <p>Labels, focus states, and reduced-motion support are built in.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="showcase" class="section">
-        <div class="section-head reveal">
-          <p class="eyebrow">Showcase</p>
-          <h2>A visual system with depth.</h2>
-        </div>
-
-        <div class="showcase-grid">
-          <article class="showcase-card glass reveal tall a">
-            <span>Atmosphere</span>
-            <h3>Blurred layers</h3>
-          </article>
-          <article class="showcase-card glass reveal b">
-            <span>Glow</span>
-            <h3>Soft neon accents</h3>
-          </article>
-          <article class="showcase-card glass reveal c">
-            <span>Contrast</span>
-            <h3>Readable hierarchy</h3>
-          </article>
-          <article class="showcase-card glass reveal d">
-            <span>Motion</span>
-            <h3>Subtle parallax</h3>
-          </article>
-        </div>
-      </section>
-
-      <section id="testimonials" class="section">
-        <div class="section-head reveal">
-          <p class="eyebrow">Praise</p>
-          <h2>It feels like a brand, not just a page.</h2>
-        </div>
-
-        <div class="grid three">
-          <blockquote class="quote glass reveal">
-            <p>“The UI feels expensive and incredibly smooth.”</p>
-            <footer>— Creative Lead</footer>
-          </blockquote>
-          <blockquote class="quote glass reveal">
-            <p>“It loads fast and still looks like a premium app.”</p>
-            <footer>— Product Designer</footer>
-          </blockquote>
-          <blockquote class="quote glass reveal">
-            <p>“This is the kind of site people remember.”</p>
-            <footer>— Founder</footer>
-          </blockquote>
-        </div>
-      </section>
-
-      <section id="contact" class="section contact-wrap glass reveal">
-        <div class="contact-copy">
-          <p class="eyebrow">Contact</p>
-          <h2>Make it yours.</h2>
-          <p>
-            Swap in your own text, links, and branding to turn this into a personal site,
-            portfolio, product page, or launch site.
-          </p>
-        </div>
-
-        <form class="contact-form" id="contactForm">
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" placeholder="Your name" required />
-
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required />
-
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" placeholder="Tell me what you're building..." required></textarea>
-
-          <button class="button button-primary" type="submit">Send message</button>
-        </form>
-      </section>
+      <div class="stats glass">
+        <span id="count">0</span> prompts generated
+      </div>
     </main>
 
-    <footer class="site-footer">
-      <p>© 2026 NovaBloom. Built with luxury, motion, and intent.</p>
+    <footer class="glass">
+      <p>A random prompt generator that works offline</p>
     </footer>
   </div>
 
